@@ -4,36 +4,43 @@ import Card, { Show_api } from './components/Card';
 import { products } from './Data/products';
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
-import { Route, Router, Routes } from 'react-router-dom';
+import { Outlet, Route, Router, Routes } from 'react-router-dom';
 import Footer from './components/Footer';
 import Read from './pages/Read';
 import About from './pages/About';
+import ProductForm from './components/ProductFrom';
+import Dashboard from './pages/Dashboard';
+import SignUp from './pages/SignUp';
+import Login from './pages/Login';
+import NotFound from './pages/404';
+import Profile from './pages/Profile';
 
 
 function App() {
   return (
     <div className="App">
-
       {/* new projects */}
       <>
-      <Navbar/>
-
+      {/* <Navbar/> */}
       <Routes>
+        <Route path='/' element={<Mainlayout/>}>
         <Route path='/' element={<Home/>} />
-        <Route path='/read'element={<Read/>}/>
+        <Route path='/read/:id'element={<Read/>}/>
         <Route path='/about-us'element={<About/>}/>
+        <Route path='/create' element={<ProductForm edit={false} />}/>
+        <Route path='/edit' element={<ProductForm edit={true}  />}/>
+        <Route path='/datatable'element={<Dashboard/>}/>
+        <Route path='/*' element={<NotFound/>}/>
+        <Route path='/profile' element={<Profile/>}/>
+        </Route>
+
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/' element={<SignUp/>}/>
+
       </Routes>
-      <Footer/>
+      
+      {/* <Footer/> */}
       </>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -145,3 +152,14 @@ function App() {
 }
 
 export default App;
+
+// MARk :: configure Mainlayout for Navbar and footer
+function Mainlayout(){
+  return(
+  <>
+    <Navbar/>
+    <Outlet/>
+    <Footer/>
+  </>
+)
+}

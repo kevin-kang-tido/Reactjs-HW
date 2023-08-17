@@ -1,59 +1,69 @@
 
-// short cut rfc
+// shorts cut rfc
 import React, { useEffect, useState } from 'react'
 import { Show_api } from '../components/Card';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import LodingView from '../components/LodingView';
+import { Link } from 'react-router-dom';
+import { fetchProducts } from '../services/productAction';
+import { fetchAllCategories, fetch_all_products } from '../redux/actions/productAction';
+import {useDispatch, useSelector} from 'react-redux'
 
 
-export default function Home() {
-    // declear variable (const)
+export default function Home(){
+    //state mangements
+    const dispatch = useDispatch()
+    const {products}= useSelector(state => state.prodReducer)
+    const {categories} = useSelector(state => state.prodReducer)
+    const {isLoading} = useSelector(state => state.prodReducer)
+    // declear variable (const)....
     const [count,setCount] = useState(0);
     // count store set setCount
 
     // Products
-    const [products,setProducts] = useState([]);
+    //Here just  local state!
+    // const [products,setProducts] = useState([]);
         //loding View part
-     const [isloading, setLoading]=useState(true);
-    const fetchProducts = () => {
-        // get api
-        fetch('https://api.escuelajs.co/api/v1/products?limit=8&offset=0')
-        .then(rep => rep.json())
-        .then(resp =>{
-          setProducts(resp)
-          setLoading(false)
+    //  const [isloading, setLoading]=useState(true);
 
-        })
-    }
+     // cut to ProductAtion
+
     // Category
-    const [category,setcategories] = useState([]);
-    const fetchCategory = () => {
-        // get api
-        fetch('https://api.escuelajs.co/api/v1/categories?limit=4')
-        .then(rep => rep.json())
-        .then(resp => setcategories(resp))
-    }
-    //User
-    const [User,setUser] = useState([]);
-    const fetchUser = () => {
-        // get api
-        fetch('https://api.escuelajs.co/api/v1/users?limit=4')
-        .then(rep => rep.json())
-        .then(resp => setUser(resp))
-    }
-
-
-
+    // const [category,setcategories] = useState([]);
+    // const fetchCategory = () => {
+    //     // get api
+    //     fetch('https://api.escuelajs.co/api/v1/categories?limit=4')
+    //     .then(rep => rep.json())
+    //     .then(resp => setcategories(resp))
+    // }
+    // //User
+    // const [User,setUser] = useState([]);
+    // const fetchUser = () => {
+    //     // get api
+    //     fetch('https://api.escuelajs.co/api/v1/users?limit=4')
+    //     .then(rep => rep.json())
+    //     .then(resp => setUser(resp))
+    // }
 
 
 
     useEffect(()  =>{
-      // called api
-        fetchProducts()
-        fetchCategory()
-        fetchUser()
-    })
+      // calle to api
+      // call funtion form ProductAtion
+      // fetchProducts()
+      // .then(resp =>{
+      //   setProducts(resp)
+      //   setLoading(false)
+      // })
+      //   // fetchProducts()
+      //   fetchCategory()
+      //   fetchUser()
+
+      // subscribe to store
+      dispatch(fetch_all_products())
+      dispatch(fetchAllCategories())
+    }, [])
 
   return (
     <main>
@@ -64,8 +74,16 @@ export default function Home() {
       <div className='row g-4'> 
         <h1>Get Products</h1>
         <button type="button" class="btn btn-dark">[GET] https://api.escuelajs.co/api/v1/products</button>   
+        
+        {/* {
+          console.log(products && products)
+        }
         {
-          isloading ?  
+          console.log(categories && categories)
+        } */}
+        
+        {
+          isLoading ?  
           <>
           <div className='col-12 col-xl-3'>
             <LodingView/>
@@ -82,22 +100,21 @@ export default function Home() {
 
           </>
 
-          
-           
-          : products.map((product) =>(
+          :products.map((product) =>(
                 <div
                 key={product.id}
                 className='col-12 col-sm-6 col-xl-3'>
-                  <Show_api
-                  titiless={product.title}
-                  imageURll={product.images[0]}
-                  descc={product.price}
-                  />
-                  {/* cards here */}
+                  <Link to={`/read/${product.id}`} className='text-decoration-none'>
+                    <Show_api
+                    titiless={product.title}
+                    imageURll={product.images[0]}
+                    descc={product.price}
+                    />
+                  </Link>
                 </div>  
           ))
 
-        }
+        } 
     
     </div>
     </div>
@@ -106,7 +123,7 @@ export default function Home() {
           <h1>Get Categories</h1>
           <button type="button" class="btn btn-dark">[GET] https://api.escuelajs.co/api/v1/products</button>   
           {
-                category.map((categories) =>(
+                categories.map((categories) =>(
                   <div
                   key={categories.name}
                   className='col-12 col-sm-6 col-xl-3'>
@@ -118,13 +135,16 @@ export default function Home() {
                   </div>
                 ))
             }
+            {
+              console.log(categories)
+            }
           </div>
         </div>
         <div className='container mt-5 w-75'>
         <div className='row g-4'>
         <h1>Get User</h1>
         <button type="button" class="btn btn-dark">[GET] https://api.escuelajs.co/api/v1/products</button>   
-          {
+          {/* {
             User.map((userr) =>(
               <div
               key={userr.id}
@@ -136,7 +156,7 @@ export default function Home() {
                 />
               </div>
             ))
-          }
+          } */}
         </div>
         </div>
 
